@@ -6,7 +6,7 @@ import { Map, List, SlidersHorizontal } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import PlaceCard, { Place } from "../../components/PlaceCard";
 import MapWrapper from "../../components/MapWrapper";
-import { searchPlaces } from "../actions/googlePlaces";
+import { searchPlaces, getCityName } from "../actions/googlePlaces";
 
 function ExploreContent() {
   const searchParams = useSearchParams();
@@ -18,6 +18,7 @@ function ExploreContent() {
   const [filterCategory, setFilterCategory] = useState("All");
   
   const [userLocation, setUserLocation] = useState<string>("28.6139,77.2090");
+  const [cityName, setCityName] = useState<string>("Detecting Location...");
   const [places, setPlaces] = useState<Place[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -40,9 +41,15 @@ function ExploreContent() {
     async function loadPlaces() {
       setIsLoading(true);
       try {
+        const name = await getCityName(userLocation);
+        setCityName(name);
+
         const searchTerm = query || "cafe, restaurant, park, lounge, club";
-        const results = await searchPlaces(searchTerm, userLocation, 50);
-        setPlaces(results);
+        const { places, resolvedCity } = await searchPlaces(searchTerm, userLocation, 50);
+        setPlaces(places);
+        if (resolvedCity) {
+          setCityName(resolvedCity);
+        }
       } catch (err) {
         console.error(err);
       } finally {
@@ -75,8 +82,9 @@ function ExploreContent() {
         <div>
           <h1 className="text-3xl font-bold">Explore Places</h1>
           <p className="text-muted-foreground">
-            {!isLoading && `${filteredPlaces.length} places found`} 
-            {query && ` for "${query}"`}
+            {!isLoading && `${filteredPlaces.length} places found near `}
+            <span className="text-primary font-semibold">{cityName}</span>
+            {query && cityName.toLowerCase() !== query.toLowerCase() && ` for "${query}"`}
             {moodParam && ` for ${moodParam} mood`}
             {timeParam && ` for ${timeParam}`}
           </p>

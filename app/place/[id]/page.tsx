@@ -128,7 +128,7 @@ export default function PlaceDetails() {
             </div>
             <div className="flex items-center gap-1.5">
               <MapPin className="w-5 h-5" />
-              {place.distance} miles away
+              {place.distance} km away
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm">Best for:</span>

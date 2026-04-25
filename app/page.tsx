@@ -6,13 +6,14 @@ import { Search } from "lucide-react";
 import { motion } from "framer-motion";
 import MoodSelector from "../components/MoodSelector";
 import PlaceCard, { Place } from "../components/PlaceCard";
-import { searchPlaces } from "./actions/googlePlaces";
+import { searchPlaces, getCityName } from "./actions/googlePlaces";
 
 export default function Home() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [mood, setMood] = useState("");
   const [userLocation, setUserLocation] = useState<string>("28.6139,77.2090");
+  const [cityName, setCityName] = useState<string>("Detecting Location...");
   const [trendingPlaces, setTrendingPlaces] = useState<Place[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -34,7 +35,10 @@ export default function Home() {
   useEffect(() => {
     async function loadTrending() {
       try {
-        const places = await searchPlaces("cafe", userLocation, 10);
+        const name = await getCityName(userLocation);
+        setCityName(name);
+
+        const { places } = await searchPlaces("cafe", userLocation, 10);
         const topRated = places.sort((a: Place, b: Place) => b.rating - a.rating).slice(0, 3);
         setTrendingPlaces(topRated);
       } catch (err) {
@@ -113,15 +117,7 @@ export default function Home() {
             </div>
           </motion.form>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="mt-12 w-full"
-          >
-            <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">How are you feeling?</p>
-            <MoodSelector selected={mood} onSelect={handleMoodSelect} />
-          </motion.div>
+
         </div>
       </section>
 
@@ -129,7 +125,7 @@ export default function Home() {
         <div className="mb-12 flex justify-between items-end">
           <div>
             <h2 className="text-3xl font-bold mb-2">Trending Places 🔥</h2>
-            <p className="text-muted-foreground">The most loved spots in your area right now.</p>
+            <p className="text-muted-foreground">The most loved spots near <span className="text-primary font-semibold">{cityName}</span> right now.</p>
           </div>
         </div>
         
@@ -156,32 +152,7 @@ export default function Home() {
         )}
       </section>
 
-      <section className="bg-muted/50 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-12">
-            <h2 className="text-3xl font-bold mb-2">Time-Based Suggestions 🕒</h2>
-            <p className="text-muted-foreground">Perfect spots for different times of the day.</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-card rounded-2xl p-6 shadow-sm border border-border transition-all hover:shadow-md hover:-translate-y-1">
-              <h3 className="font-bold text-xl mb-2 flex items-center gap-2">🌅 Morning</h3>
-              <p className="text-muted-foreground text-sm mb-4">Start your day right with cozy cafes and peaceful parks.</p>
-              <button onClick={() => router.push('/explore?time=Morning')} className="text-primary font-medium text-sm hover:underline">Explore Morning Spots →</button>
-            </div>
-            <div className="bg-card rounded-2xl p-6 shadow-sm border border-border transition-all hover:shadow-md hover:-translate-y-1">
-              <h3 className="font-bold text-xl mb-2 flex items-center gap-2">🌇 Evening</h3>
-              <p className="text-muted-foreground text-sm mb-4">Relax after work at the best hangout spots and restaurants.</p>
-              <button onClick={() => router.push('/explore?time=Evening')} className="text-primary font-medium text-sm hover:underline">Explore Evening Spots →</button>
-            </div>
-            <div className="bg-card rounded-2xl p-6 shadow-sm border border-border transition-all hover:shadow-md hover:-translate-y-1">
-              <h3 className="font-bold text-xl mb-2 flex items-center gap-2">🌃 Night</h3>
-              <p className="text-muted-foreground text-sm mb-4">Experience the city's nightlife with clubs and late-night lounges.</p>
-              <button onClick={() => router.push('/explore?time=Night')} className="text-primary font-medium text-sm hover:underline">Explore Night Spots →</button>
-            </div>
-          </div>
-        </div>
-      </section>
+
     </div>
   );
 }

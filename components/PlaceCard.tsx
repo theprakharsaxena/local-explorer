@@ -57,7 +57,7 @@ export default function PlaceCard({ place }: { place: Place }) {
           
           <div className="flex items-center text-xs text-muted-foreground font-medium">
             <MapPin className="w-3.5 h-3.5 mr-1" />
-            {place.distance} miles away
+            {place.distance} km away
           </div>
         </div>
       </Link>
