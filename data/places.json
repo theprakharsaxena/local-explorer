@@ -1,0 +1,74 @@
+[
+  {
+    "id": "1",
+    "name": "Brew & Books",
+    "category": "Cafe",
+    "image": "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=800",
+    "rating": 4.8,
+    "distance": 1.2,
+    "description": "A cozy cafe perfect for reading or getting some work done. Features artisanal coffee and a massive bookshelf.",
+    "tags": {"mood": ["Study", "Chill"], "time": ["Morning", "Evening"]},
+    "coordinates": {"lat": 28.6139, "lng": 77.2090},
+    "isHiddenGem": false
+  },
+  {
+    "id": "2",
+    "name": "Sunset Point Park",
+    "category": "Park",
+    "image": "https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&q=80&w=800",
+    "rating": 4.6,
+    "distance": 3.5,
+    "description": "Beautiful city park with an elevated viewpoint. Best spot to watch the sunset with friends.",
+    "tags": {"mood": ["Chill", "Date"], "time": ["Evening"]},
+    "coordinates": {"lat": 28.6200, "lng": 77.2150},
+    "isHiddenGem": true
+  },
+  {
+    "id": "3",
+    "name": "The Neon Lounge",
+    "category": "Club",
+    "image": "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&q=80&w=800",
+    "rating": 4.9,
+    "distance": 5.0,
+    "description": "Premium nightclub with neon aesthetics and live DJ. Perfect for a wild weekend.",
+    "tags": {"mood": ["Party"], "time": ["Night"]},
+    "coordinates": {"lat": 28.6300, "lng": 77.2200},
+    "isHiddenGem": false
+  },
+  {
+    "id": "4",
+    "name": "Hidden Alley Bistro",
+    "category": "Restaurant",
+    "image": "https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&q=80&w=800",
+    "rating": 4.7,
+    "distance": 2.1,
+    "description": "A secret restaurant tucked away in the city center. Offers an intimate dining experience with exquisite food.",
+    "tags": {"mood": ["Date"], "time": ["Evening", "Night"]},
+    "coordinates": {"lat": 28.6150, "lng": 77.2120},
+    "isHiddenGem": true
+  },
+  {
+    "id": "5",
+    "name": "Riverside Hangout",
+    "category": "Park",
+    "image": "https://images.unsplash.com/photo-1473445730015-841f29a949ce?auto=format&fit=crop&q=80&w=800",
+    "rating": 4.5,
+    "distance": 4.2,
+    "description": "Relaxing spot by the river. Great for a picnic or a peaceful morning walk.",
+    "tags": {"mood": ["Chill"], "time": ["Morning"]},
+    "coordinates": {"lat": 28.6180, "lng": 77.2250},
+    "isHiddenGem": false
+  },
+  {
+    "id": "6",
+    "name": "Rooftop Starlight",
+    "category": "Lounge",
+    "image": "https://images.unsplash.com/photo-1582103287241-2762ad4092c0?auto=format&fit=crop&q=80&w=800",
+    "rating": 4.8,
+    "distance": 3.8,
+    "description": "Luxury rooftop lounge with amazing city views. Perfect for late-night vibes and drinks.",
+    "tags": {"mood": ["Party", "Date"], "time": ["Night"]},
+    "coordinates": {"lat": 28.6250, "lng": 77.2000},
+    "isHiddenGem": false
+  }
+]
