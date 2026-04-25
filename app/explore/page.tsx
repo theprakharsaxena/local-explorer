@@ -17,10 +17,11 @@ function ExploreContent() {
   const [view, setView] = useState<"list" | "map">("list");
   const [filterCategory, setFilterCategory] = useState("All");
   
-  const [userLocation, setUserLocation] = useState<string>("28.6139,77.2090");
+  const [userLocation, setUserLocation] = useState<string | null>(null);
   const [cityName, setCityName] = useState<string>("Detecting Location...");
   const [places, setPlaces] = useState<Place[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [permissionDenied, setPermissionDenied] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined" && navigator.geolocation) {
@@ -32,20 +33,27 @@ function ExploreContent() {
         },
         (error) => {
           console.error("Error getting location:", error);
+          setPermissionDenied(true);
+          setIsLoading(false);
         }
       );
+    } else {
+      setPermissionDenied(true);
+      setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
+    if (!userLocation) return;
+
     async function loadPlaces() {
       setIsLoading(true);
       try {
-        const name = await getCityName(userLocation);
+        const name = await getCityName(userLocation!);
         setCityName(name);
 
         const searchTerm = query || "cafe, restaurant, park, lounge, club";
-        const { places, resolvedCity } = await searchPlaces(searchTerm, userLocation, 50);
+        const { places, resolvedCity } = await searchPlaces(searchTerm, userLocation!, 50);
         setPlaces(places);
         if (resolvedCity) {
           setCityName(resolvedCity);
@@ -132,9 +140,16 @@ function ExploreContent() {
       {/* Content Area */}
       <div className="flex-1 min-h-0 relative">
         <AnimatePresence mode="wait">
-          {isLoading ? (
-            <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="h-full flex items-center justify-center">
+          {permissionDenied ? (
+            <motion.div key="denied" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="h-full flex flex-col items-center justify-center p-6 text-center max-w-xl mx-auto">
+              <div className="text-5xl mb-4">📍</div>
+              <p className="text-muted-foreground font-medium text-lg mb-2">Location access was denied or isn't supported.</p>
+              <p className="text-sm text-muted-foreground/80">Please allow location permissions in browser configurations to generate mapped pointers.</p>
+            </motion.div>
+          ) : isLoading || !userLocation ? (
+            <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="h-full flex flex-col items-center justify-center gap-4">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+              <p className="text-sm text-muted-foreground animate-pulse">Establishing secure positioning...</p>
             </motion.div>
           ) : view === "list" ? (
             <motion.div

@@ -12,10 +12,11 @@ export default function Home() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [mood, setMood] = useState("");
-  const [userLocation, setUserLocation] = useState<string>("28.6139,77.2090");
+  const [userLocation, setUserLocation] = useState<string | null>(null);
   const [cityName, setCityName] = useState<string>("Detecting Location...");
   const [trendingPlaces, setTrendingPlaces] = useState<Place[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [permissionDenied, setPermissionDenied] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined" && navigator.geolocation) {
@@ -27,18 +28,26 @@ export default function Home() {
         },
         (error) => {
           console.error("Error getting location:", error);
+          setPermissionDenied(true);
+          setIsLoading(false);
         }
       );
+    } else {
+      setPermissionDenied(true);
+      setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
+    if (!userLocation) return;
+
     async function loadTrending() {
+      setIsLoading(true);
       try {
-        const name = await getCityName(userLocation);
+        const name = await getCityName(userLocation!);
         setCityName(name);
 
-        const { places } = await searchPlaces("cafe", userLocation, 10);
+        const { places } = await searchPlaces("cafe", userLocation!, 10);
         const topRated = places.sort((a: Place, b: Place) => b.rating - a.rating).slice(0, 3);
         setTrendingPlaces(topRated);
       } catch (err) {
@@ -129,9 +138,16 @@ export default function Home() {
           </div>
         </div>
         
-        {isLoading ? (
-          <div className="flex justify-center py-10">
+        {permissionDenied ? (
+          <div className="text-center py-10 bg-card border border-border rounded-2xl max-w-xl mx-auto p-8 shadow-sm flex flex-col items-center">
+            <div className="text-4xl mb-4">📍</div>
+            <p className="text-muted-foreground mb-4 font-medium text-lg">Location access was denied or isn't supported.</p>
+            <p className="text-sm text-muted-foreground/80 mb-6">Please allow location permissions in your browser settings to discover customized recommendations in your current area.</p>
+          </div>
+        ) : isLoading || !userLocation ? (
+          <div className="flex flex-col items-center justify-center py-12 gap-4">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+            <p className="text-sm text-muted-foreground animate-pulse">Establishing secure positioning...</p>
           </div>
         ) : trendingPlaces.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -148,7 +164,7 @@ export default function Home() {
             ))}
           </div>
         ) : (
-          <p className="text-center text-muted-foreground py-10">Ensure FOURSQUARE_API_KEY is set in .env.local to see trending places.</p>
+          <p className="text-center text-muted-foreground py-10">No trending places found in your area.</p>
         )}
       </section>
 
