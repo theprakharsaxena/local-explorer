@@ -86,7 +86,7 @@ function mapGoogleToPlace(gPlace: any): Place {
   };
 }
 
-export async function searchPlaces(query: string = "", ll: string = "28.6139,77.2090", limit: number = 40) {
+export async function searchPlaces(query: string = "", ll: string = "28.6139,77.2090", limit: number = 100) {
   if (!API_KEY) {
     console.warn("GOOGLE_PLACES_API_KEY is not set.");
     return { places: [] };
@@ -112,7 +112,7 @@ export async function searchPlaces(query: string = "", ll: string = "28.6139,77.
 
         if (isLocation) {
           const cityName = firstPlace.name;
-          const categoriesToFetch = ["tourist attractions", "cafes", "top restaurants", "parks"];
+          const categoriesToFetch = ["tourist attractions", "cafes", "top restaurants", "parks", "shopping malls", "museums", "night clubs"];
           
           const promises = categoriesToFetch.map(async (cat) => {
             const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(`${cat} in ${cityName}`)}&key=${API_KEY}`;
@@ -143,7 +143,7 @@ export async function searchPlaces(query: string = "", ll: string = "28.6139,77.
     }
 
     // 2. Multi-category parallel nearby POI acquisition
-    const categoriesToFetch = ["cafe", "restaurant", "tourist_attraction", "park"];
+    const categoriesToFetch = ["cafe", "restaurant", "tourist_attraction", "park", "shopping_mall", "museum", "night_club"];
     const promises = categoriesToFetch.map(async (type) => {
       const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=10000&type=${type}&key=${API_KEY}`;
       const res = await fetch(url);

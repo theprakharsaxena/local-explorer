@@ -53,7 +53,7 @@ function ExploreContent() {
         setCityName(name);
 
         const searchTerm = query || "cafe, restaurant, park, lounge, club";
-        const { places, resolvedCity } = await searchPlaces(searchTerm, userLocation!, 50);
+        const { places, resolvedCity } = await searchPlaces(searchTerm, userLocation!, 100);
         setPlaces(places);
         if (resolvedCity) {
           setCityName(resolvedCity);
@@ -157,28 +157,30 @@ function ExploreContent() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
-              className="h-full overflow-y-auto pr-2 no-scrollbar pb-8"
+              className="h-full flex flex-col lg:flex-row gap-6"
             >
-              {filteredPlaces.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {filteredPlaces.map((place, i) => (
-                    <motion.div
-                      key={place.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.05 }}
-                    >
-                      <PlaceCard place={place} />
-                    </motion.div>
-                  ))}
-                </div>
-              ) : (
-                <div className="h-full flex flex-col items-center justify-center text-muted-foreground pt-20">
-                  <div className="text-4xl mb-4">🏜️</div>
-                  <h3 className="text-xl font-bold mb-2">No places found</h3>
-                  <p>Try adjusting your filters or search query.</p>
-                </div>
-              )}
+              <div className="flex-1 h-full overflow-y-auto pr-2 no-scrollbar pb-8">
+                {filteredPlaces.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {filteredPlaces.map((place, i) => (
+                      <motion.div
+                        key={place.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.05 }}
+                      >
+                        <PlaceCard place={place} />
+                      </motion.div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="h-full flex flex-col items-center justify-center text-muted-foreground pt-20">
+                    <div className="text-4xl mb-4">🏜️</div>
+                    <h3 className="text-xl font-bold mb-2">No places found</h3>
+                    <p>Try adjusting your filters or search query.</p>
+                  </div>
+                )}
+              </div>
             </motion.div>
           ) : (
             <motion.div
