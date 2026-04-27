@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import { Heart, Star, MapPin, ArrowLeft, Send } from "lucide-react";
+import { Heart, Star, MapPin, ArrowLeft } from "lucide-react";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
 import { getPlaceDetails } from "../../actions/googlePlaces";
 import { Place } from "../../../components/PlaceCard";
@@ -17,10 +17,6 @@ export default function PlaceDetails() {
   const [isLoading, setIsLoading] = useState(true);
 
   const [favorites, setFavorites] = useLocalStorage<string[]>("favorites", []);
-  const [reviews, setReviews] = useLocalStorage<Record<string, {text: string, rating: number}[]>>("reviews", {});
-  
-  const [newReview, setNewReview] = useState("");
-  const [newRating, setNewRating] = useState(5);
 
   useEffect(() => {
     async function fetchPlace() {
@@ -49,7 +45,6 @@ export default function PlaceDetails() {
   }
 
   const isFavorite = favorites.includes(place.id);
-  const placeReviews = reviews[place.id] || [];
 
   const toggleFavorite = () => {
     if (isFavorite) {
@@ -57,19 +52,6 @@ export default function PlaceDetails() {
     } else {
       setFavorites([...favorites, place.id]);
     }
-  };
-
-  const handleAddReview = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newReview.trim()) return;
-
-    const reviewObj = { text: newReview, rating: newRating };
-    setReviews({
-      ...reviews,
-      [place.id]: [...placeReviews, reviewObj]
-    });
-    setNewReview("");
-    setNewRating(5);
   };
 
   return (
@@ -159,66 +141,7 @@ export default function PlaceDetails() {
           </div>
         </div>
 
-        {/* Reviews Section */}
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-6">Reviews ({placeReviews.length})</h2>
-          
-          <div className="space-y-6 mb-10">
-            {placeReviews.length === 0 ? (
-              <p className="text-muted-foreground italic">No reviews yet. Be the first to review!</p>
-            ) : (
-              placeReviews.map((rev, idx) => (
-                <div key={idx} className="bg-card p-5 rounded-2xl border border-border shadow-sm">
-                  <div className="flex items-center gap-1 mb-2">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className={`w-4 h-4 ${i < rev.rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted'}`} />
-                    ))}
-                  </div>
-                  <p className="text-foreground">{rev.text}</p>
-                </div>
-              ))
-            )}
-          </div>
 
-          {/* Add Review */}
-          <div className="bg-card p-6 rounded-2xl border border-border shadow-sm">
-            <h3 className="font-bold text-lg mb-4">Write a Review</h3>
-            <form onSubmit={handleAddReview}>
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-2 text-muted-foreground">Rating</label>
-                <div className="flex gap-2">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      type="button"
-                      onClick={() => setNewRating(star)}
-                      className="focus:outline-none"
-                    >
-                      <Star className={`w-8 h-8 transition-colors ${newRating >= star ? 'fill-yellow-400 text-yellow-400' : 'text-muted hover:text-yellow-200'}`} />
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="mb-4">
-                <textarea
-                  className="w-full bg-background border border-border rounded-xl p-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-none transition-all"
-                  rows={4}
-                  placeholder="Share your experience..."
-                  value={newReview}
-                  onChange={(e) => setNewReview(e.target.value)}
-                  required
-                />
-              </div>
-              <button 
-                type="submit"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3 rounded-xl font-medium transition-colors flex items-center gap-2"
-              >
-                <Send className="w-4 h-4" />
-                Submit Review
-              </button>
-            </form>
-          </div>
-        </div>
       </div>
     </div>
   );
