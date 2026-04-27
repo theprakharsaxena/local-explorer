@@ -16,6 +16,13 @@ export interface Place {
   tags: { mood: string[]; time: string[] };
   coordinates: { lat: number; lng: number };
   isHiddenGem: boolean;
+  website?: string;
+  phone?: string;
+  address?: string;
+  openingHours?: string[];
+  priceLevel?: number;
+  openNow?: boolean;
+  mapUrl?: string;
 }
 
 export default function PlaceCard({ place }: { place: Place }) {

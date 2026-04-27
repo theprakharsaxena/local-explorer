@@ -51,6 +51,14 @@ function mapGoogleToPlace(gPlace: any): Place {
   if (moodTags.length === 0) moodTags.push("Chill");
   if (timeTags.length === 0) timeTags.push("Evening");
 
+  const openingHours = gPlace.opening_hours?.weekday_text;
+  const openNow = gPlace.opening_hours?.open_now;
+  const priceLevel = gPlace.price_level;
+  const website = gPlace.website;
+  const phone = gPlace.formatted_phone_number;
+  const address = gPlace.formatted_address || gPlace.vicinity;
+  const mapUrl = gPlace.url;
+
   return {
     id: gPlace.place_id || Math.random().toString(),
     name: gPlace.name,
@@ -67,7 +75,14 @@ function mapGoogleToPlace(gPlace: any): Place {
       lat: gPlace.geometry?.location?.lat || 0,
       lng: gPlace.geometry?.location?.lng || 0
     },
-    isHiddenGem: rating >= 4.5 && (gPlace.user_ratings_total || 0) < 100
+    isHiddenGem: rating >= 4.5 && (gPlace.user_ratings_total || 0) < 100,
+    website,
+    phone,
+    address,
+    openingHours,
+    priceLevel,
+    openNow,
+    mapUrl
   };
 }
 
