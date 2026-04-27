@@ -18,7 +18,7 @@ function mapGoogleToPlace(gPlace: any): Place {
   const category = formatCategory(rawCategory);
   
   // Construct photo URL using Google Places API
-  let image = "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=800"; // fallback
+  let image = undefined;
   if (gPlace.photos && gPlace.photos.length > 0 && API_KEY) {
     const photoRef = gPlace.photos[0].photo_reference;
     image = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${photoRef}&key=${API_KEY}`;

@@ -58,13 +58,15 @@ export default function PlaceDetails() {
     <div className="min-h-screen pb-20">
       {/* Banner */}
       <div className="relative w-full h-[40vh] md:h-[50vh] bg-muted">
-        <Image
-          src={place.image}
-          alt={place.name}
-          fill
-          priority
-          className="object-cover"
-        />
+        {place.image && (
+          <Image
+            src={place.image}
+            alt={place.name}
+            fill
+            priority
+            className="object-cover"
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent"></div>
         
         <div className="absolute top-6 left-4 sm:left-8 z-10">

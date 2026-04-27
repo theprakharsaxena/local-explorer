@@ -9,7 +9,7 @@ export interface Place {
   id: string;
   name: string;
   category: string;
-  image: string;
+  image?: string;
   rating: number;
   distance: number;
   description: string;
@@ -33,14 +33,18 @@ export default function PlaceCard({ place }: { place: Place }) {
       className="bg-card text-card-foreground rounded-2xl overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] border border-border group"
     >
       <Link href={`/place/${place.id}`} className="block h-full">
-        <div className="relative h-48 w-full overflow-hidden bg-muted">
-          <Image
-            src={place.image}
-            alt={place.name}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-          />
+        <div className="relative h-48 w-full overflow-hidden bg-muted flex items-center justify-center">
+          {place.image ? (
+            <Image
+              src={place.image}
+              alt={place.name}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+          ) : (
+            <MapPin className="w-12 h-12 text-muted-foreground/50" />
+          )}
           {place.isHiddenGem && (
             <div className="absolute top-3 left-3 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full shadow-md backdrop-blur-md">
               Hidden Gem 💎

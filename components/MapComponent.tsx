@@ -36,8 +36,8 @@ const createCustomMarker = (place: Place) => {
     className: 'custom-div-icon',
     html: `
       <div class="flex flex-col items-center">
-        <div class="w-10 h-10 rounded-full border-2 border-primary shadow-lg overflow-hidden bg-white">
-          <img src="${place.image}" alt="${place.name}" class="w-full h-full object-cover" />
+        <div class="w-10 h-10 rounded-full border-2 border-primary shadow-lg overflow-hidden bg-white flex items-center justify-center">
+          ${place.image ? `<img src="${place.image}" alt="${place.name}" class="w-full h-full object-cover" />` : `<span class="text-xs text-primary font-bold">${place.name.charAt(0)}</span>`}
         </div>
         <div class="bg-card text-card-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-md mt-1 whitespace-nowrap max-w-[100px] truncate shadow-md border border-border">
           ${place.name}
@@ -100,9 +100,11 @@ export default function MapComponent({ places, userLocation }: { places: Place[]
           >
             <Popup>
               <div className="text-center w-40">
-                <div className="w-full h-24 mb-2 overflow-hidden rounded-md">
-                  <img src={place.image} alt={place.name} className="object-cover w-full h-full" />
-                </div>
+                {place.image && (
+                  <div className="w-full h-24 mb-2 overflow-hidden rounded-md">
+                    <img src={place.image} alt={place.name} className="object-cover w-full h-full" />
+                  </div>
+                )}
                 <h3 className="font-bold text-sm mb-1">{place.name}</h3>
                 <p className="text-xs text-gray-500 mb-2">{place.category}</p>
                 <Link href={`/place/${place.id}`} className="block w-full bg-primary text-primary-foreground text-xs py-1 rounded-md text-center hover:bg-primary/90 transition-colors">
