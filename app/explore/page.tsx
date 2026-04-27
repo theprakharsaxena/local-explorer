@@ -188,7 +188,7 @@ function ExploreContent() {
               exit={{ opacity: 0, scale: 0.95 }}
               className="h-full w-full rounded-2xl overflow-hidden relative z-0"
             >
-              <MapWrapper places={filteredPlaces} />
+              <MapWrapper places={filteredPlaces} userLocation={userLocation} />
             </motion.div>
           )}
         </AnimatePresence>

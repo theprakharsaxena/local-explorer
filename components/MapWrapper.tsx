@@ -4,6 +4,6 @@ import { Place } from "./PlaceCard";
 
 const MapComponent = dynamic(() => import("./MapComponent"), { ssr: false });
 
-export default function MapWrapper({ places }: { places: Place[] }) {
-  return <MapComponent places={places} />;
+export default function MapWrapper({ places, userLocation }: { places: Place[]; userLocation?: string | null }) {
+  return <MapComponent places={places} userLocation={userLocation} />;
 }
