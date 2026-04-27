@@ -133,13 +133,14 @@ export async function searchPlaces(query: string = "", ll: string = "28.6139,77.
 
           return { 
             places: Array.from(uniquePlaces.values()).slice(0, limit).map(mapGoogleToPlace),
-            resolvedCity: cityName
+            resolvedCity: cityName,
+            isLocationSearch: true
           };
         }
         
-        return { places: (data.results || []).slice(0, limit).map(mapGoogleToPlace) };
+        return { places: (data.results || []).slice(0, limit).map(mapGoogleToPlace), isLocationSearch: false };
       }
-      return { places: [] };
+      return { places: [], isLocationSearch: false };
     }
 
     // 2. Multi-category parallel nearby POI acquisition
@@ -161,10 +162,10 @@ export async function searchPlaces(query: string = "", ll: string = "28.6139,77.
       if (place.place_id) uniquePlaces.set(place.place_id, place);
     });
 
-    return { places: Array.from(uniquePlaces.values()).slice(0, limit).map(mapGoogleToPlace) };
+    return { places: Array.from(uniquePlaces.values()).slice(0, limit).map(mapGoogleToPlace), isLocationSearch: false };
   } catch (err) {
     console.error("Failed Google search:", err);
-    return { places: [] };
+    return { places: [], isLocationSearch: false };
   }
 }
 

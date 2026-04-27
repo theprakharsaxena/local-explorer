@@ -25,14 +25,14 @@ export interface Place {
   mapUrl?: string;
 }
 
-export default function PlaceCard({ place }: { place: Place }) {
+export default function PlaceCard({ place, hideDistance }: { place: Place, hideDistance?: boolean }) {
   return (
     <motion.div
       whileHover={{ y: -5 }}
       transition={{ type: "spring", stiffness: 300 }}
       className="bg-card text-card-foreground rounded-2xl overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] border border-border group"
     >
-      <Link href={`/place/${place.id}`} className="block h-full">
+      <Link href={`/place/${place.id}${hideDistance ? '?hideDistance=true' : ''}`} className="block h-full">
         <div className="relative h-48 w-full overflow-hidden bg-muted flex items-center justify-center">
           {place.image ? (
             <Image
@@ -65,10 +65,12 @@ export default function PlaceCard({ place }: { place: Place }) {
             {place.description}
           </p>
           
-          <div className="flex items-center text-xs text-muted-foreground font-medium">
-            <MapPin className="w-3.5 h-3.5 mr-1" />
-            {place.distance} km away
-          </div>
+          {!hideDistance && (
+            <div className="flex items-center text-xs text-muted-foreground font-medium">
+              <MapPin className="w-3.5 h-3.5 mr-1" />
+              {place.distance} km away
+            </div>
+          )}
         </div>
       </Link>
     </motion.div>

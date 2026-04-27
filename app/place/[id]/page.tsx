@@ -1,17 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { Heart, Star, MapPin, ArrowLeft, Phone, Globe, Clock, ExternalLink } from "lucide-react";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
 import { getPlaceDetails } from "../../actions/googlePlaces";
 import { Place } from "../../../components/PlaceCard";
 
-export default function PlaceDetails() {
+function PlaceDetailsContent() {
   const params = useParams();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const hideDistance = searchParams.get("hideDistance") === "true";
   
   const [place, setPlace] = useState<Place | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -115,10 +117,12 @@ export default function PlaceDetails() {
               <Star className="w-6 h-6 fill-yellow-400 text-yellow-400" />
               {place.rating}
             </div>
-            <div className="flex items-center gap-1.5">
-              <MapPin className="w-5 h-5" />
-              {place.distance} km away
-            </div>
+            {!hideDistance && (
+              <div className="flex items-center gap-1.5">
+                <MapPin className="w-5 h-5" />
+                {place.distance} km away
+              </div>
+            )}
             {place.priceLevel !== undefined && (
               <div className="flex items-center gap-1.5">
                 <span className="text-sm font-medium">Price:</span>
@@ -127,14 +131,7 @@ export default function PlaceDetails() {
                 </span>
               </div>
             )}
-            <div className="flex items-center gap-2">
-              <span className="text-sm">Best for:</span>
-              <div className="flex gap-1">
-                {place.tags.mood.map(m => (
-                  <span key={m} className="bg-muted px-2 py-0.5 rounded text-xs">{m}</span>
-                ))}
-              </div>
-            </div>
+            {/* Best for tags removed */}
           </div>
 
           <div className="space-y-8">
@@ -145,14 +142,7 @@ export default function PlaceDetails() {
               </p>
             </section>
 
-            <section className="bg-primary/5 p-6 rounded-2xl border border-primary/10">
-              <h2 className="text-xl font-bold mb-2 flex items-center gap-2 text-primary">
-                ✨ Why visit?
-              </h2>
-              <p className="text-muted-foreground leading-relaxed">
-                Whether you're looking for a {place.tags.mood.join(" or ").toLowerCase()} vibe, {place.name} offers an unparalleled experience. Best visited in the {place.tags.time.join(" or ").toLowerCase()} for the perfect atmosphere.
-              </p>
-            </section>
+            {/* Why visit section removed */}
 
             {/* Contact & Info Section */}
             <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -221,6 +211,14 @@ export default function PlaceDetails() {
 
       </div>
     </div>
+  );
+}
+
+export default function PlaceDetails() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center w-full min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div></div>}>
+      <PlaceDetailsContent />
+    </Suspense>
   );
 }
 

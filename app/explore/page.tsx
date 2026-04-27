@@ -22,6 +22,7 @@ function ExploreContent() {
   const [places, setPlaces] = useState<Place[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [permissionDenied, setPermissionDenied] = useState(false);
+  const [isLocationSearch, setIsLocationSearch] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined" && navigator.geolocation) {
@@ -53,8 +54,9 @@ function ExploreContent() {
         setCityName(name);
 
         const searchTerm = query || "cafe, restaurant, park, lounge, club";
-        const { places, resolvedCity } = await searchPlaces(searchTerm, userLocation!, 100);
+        const { places, resolvedCity, isLocationSearch } = await searchPlaces(searchTerm, userLocation!, 100);
         setPlaces(places);
+        setIsLocationSearch(!!isLocationSearch);
         if (resolvedCity) {
           setCityName(resolvedCity);
         }
@@ -169,7 +171,7 @@ function ExploreContent() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.05 }}
                       >
-                        <PlaceCard place={place} />
+                        <PlaceCard place={place} hideDistance={isLocationSearch} />
                       </motion.div>
                     ))}
                   </div>
