@@ -57,9 +57,8 @@ export default function PlaceCard({ place }: { place: Place }) {
         </div>
         
         <div className="p-5">
-          <div className="flex justify-between items-start mb-3">
+          <div className="mb-3">
             <h3 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors">{place.name}</h3>
-            <span className="text-xs font-medium bg-muted px-2.5 py-1 rounded-md text-muted-foreground whitespace-nowrap">{place.category}</span>
           </div>
           
           <p className="text-sm text-muted-foreground line-clamp-2 mb-4 leading-relaxed">
