@@ -127,7 +127,7 @@ function PlaceDetailsContent() {
               <div className="flex items-center gap-1.5">
                 <span className="text-sm font-medium">Price:</span>
                 <span className="text-primary font-bold">
-                  {'$'.repeat(place.priceLevel)}
+                  {'₹'.repeat(place.priceLevel)}
                 </span>
               </div>
             )}
