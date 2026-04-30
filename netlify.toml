@@ -1,0 +1,21 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+# Proxy API routes to Netlify Functions
+[[redirects]]
+  from = "/api/place/*"
+  to = "/.netlify/functions/place/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/api/geocode/*"
+  to = "/.netlify/functions/geocode/:splat"
+  status = 200
+
+# SPA fallback — must be last
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
