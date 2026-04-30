@@ -7,7 +7,7 @@ const moods = [
   { name: "Party", emoji: "🎉", color: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800" },
 ];
 
-export default function MoodSelector({ selected, onSelect }: { selected?: string; onSelect: (mood: string) => void }) {
+export default function MoodSelector({ selected, onSelect }) {
   return (
     <div className="flex flex-wrap justify-center gap-3 my-8">
       {moods.map((mood) => {
@@ -18,10 +18,7 @@ export default function MoodSelector({ selected, onSelect }: { selected?: string
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => onSelect(isSelected ? "" : mood.name)}
-            className={`
-              px-6 py-3 rounded-full font-medium transition-all duration-300 border shadow-sm flex items-center gap-2
-              ${isSelected ? mood.color + " ring-2 ring-offset-2 ring-primary dark:ring-offset-background" : "bg-card text-card-foreground hover:bg-muted border-border"}
-            `}
+            className={`px-6 py-3 rounded-full font-medium transition-all duration-300 border shadow-sm flex items-center gap-2 ${isSelected ? mood.color + " ring-2 ring-offset-2 ring-primary dark:ring-offset-background" : "bg-card text-card-foreground hover:bg-muted border-border"}`}
           >
             <span className="text-xl">{mood.emoji}</span>
             {mood.name}

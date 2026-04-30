@@ -3,34 +3,24 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { HeartOff } from "lucide-react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-import PlaceCard, { Place } from "../components/PlaceCard";
+import PlaceCard from "../components/PlaceCard";
 import { getMultiplePlaces } from "../services/googlePlaces";
 
 export default function Favorites() {
-  const [favorites] = useLocalStorage<string[]>("favorites", []);
-  const [favoritePlaces, setFavoritePlaces] = useState<Place[]>([]);
+  const [favorites] = useLocalStorage("favorites", []);
+  const [favoritePlaces, setFavoritePlaces] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchFavorites() {
-      if (favorites.length === 0) {
-        setFavoritePlaces([]);
-        setIsLoading(false);
-        return;
-      }
-
+    async function load() {
+      if (!favorites.length) { setFavoritePlaces([]); setIsLoading(false); return; }
       setIsLoading(true);
       try {
-        const places = await getMultiplePlaces(favorites);
-        setFavoritePlaces(places);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
+        setFavoritePlaces(await getMultiplePlaces(favorites));
+      } catch (err) { console.error(err); }
+      finally { setIsLoading(false); }
     }
-
-    fetchFavorites();
+    load();
   }, [favorites.length]);
 
   return (
@@ -50,25 +40,13 @@ export default function Favorites() {
             <HeartOff className="w-10 h-10 text-muted-foreground" />
           </div>
           <h2 className="text-2xl font-bold mb-3">No favorites yet</h2>
-          <p className="text-muted-foreground mb-8 max-w-md">
-            You haven't saved any places yet. Start exploring and click the heart icon to save places here.
-          </p>
-          <Link
-            to="/explore"
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-full font-medium transition-colors"
-          >
-            Explore Places
-          </Link>
+          <p className="text-muted-foreground mb-8 max-w-md">Start exploring and click the heart icon to save places here.</p>
+          <Link to="/explore" className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-full font-medium transition-colors">Explore Places</Link>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {favoritePlaces.map((place, i) => (
-            <motion.div
-              key={place.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.05 }}
-            >
+            <motion.div key={place.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.05 }}>
               <PlaceCard place={place} />
             </motion.div>
           ))}

@@ -1,24 +1,22 @@
-import { Place } from '../components/PlaceCard';
-
 const API_KEY = import.meta.env.VITE_GOOGLE_PLACES_API_KEY;
 
-function formatCategory(cat: string): string {
+function formatCategory(cat) {
   return cat.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
 }
 
-function mapGoogleToPlace(g: any): Place {
+function mapGoogleToPlace(g) {
   const skip = ['establishment', 'point_of_interest', 'landmark', 'place_of_worship', 'political', 'store'];
-  const types = (g.types || []).filter((t: string) => !skip.includes(t));
+  const types = (g.types || []).filter(t => !skip.includes(t));
   const category = formatCategory(types[0] || g.types?.[0] || 'place');
 
-  let image: string | undefined;
+  let image;
   if (g.photos?.[0]?.photo_reference && API_KEY) {
     image = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${g.photos[0].photo_reference}&key=${API_KEY}`;
   }
 
   const text = [category, ...(g.types || [])].join(' ').toLowerCase();
-  const mood: string[] = [];
-  const time: string[] = [];
+  const mood = [];
+  const time = [];
 
   if (/cafe|coffee|tea/.test(text)) { mood.push('Study', 'Chill'); time.push('Morning'); }
   if (/park|tourist|nature|garden/.test(text)) { mood.push('Chill'); time.push('Morning', 'Evening'); }
@@ -48,24 +46,22 @@ function mapGoogleToPlace(g: any): Place {
   };
 }
 
-async function fetchJson(url: string) {
+async function fetchJson(url) {
   const res = await fetch(url);
   return res.ok ? res.json() : null;
 }
 
 export async function searchPlaces(query = '', ll = '28.6139,77.2090', limit = 100) {
   if (!API_KEY) return { places: [], isLocationSearch: false };
-
   const [lat, lng] = ll.split(',');
 
   try {
-    // Text-based search (user typed something specific)
     if (query && query !== 'cafe, restaurant, park, lounge, club') {
       const data = await fetchJson(`/api/place/textsearch/json?query=${encodeURIComponent(query)}&location=${lat},${lng}&radius=10000&key=${API_KEY}`);
       if (!data?.results?.length) return { places: [], isLocationSearch: false };
 
       const first = data.results[0];
-      const isCity = (first.types || []).some((t: string) =>
+      const isCity = (first.types || []).some(t =>
         ['locality', 'administrative_area_level_1', 'administrative_area_level_2', 'sublocality', 'country'].includes(t)
       );
 
@@ -75,21 +71,20 @@ export async function searchPlaces(query = '', ll = '28.6139,77.2090', limit = 1
         const all = await Promise.all(cats.map(c =>
           fetchJson(`/api/place/textsearch/json?query=${encodeURIComponent(`${c} in ${city}`)}&key=${API_KEY}`).then(d => d?.results || [])
         ));
-        const unique = new Map<string, any>();
-        all.flat().forEach((p: any) => p.place_id && unique.set(p.place_id, p));
+        const unique = new Map();
+        all.flat().forEach(p => p.place_id && unique.set(p.place_id, p));
         return { places: [...unique.values()].slice(0, limit).map(mapGoogleToPlace), resolvedCity: city, isLocationSearch: true };
       }
 
       return { places: data.results.slice(0, limit).map(mapGoogleToPlace), isLocationSearch: false };
     }
 
-    // Nearby search (no query — browse current location)
     const types = ['cafe', 'restaurant', 'tourist_attraction', 'park', 'shopping_mall', 'museum', 'night_club'];
     const all = await Promise.all(types.map(t =>
       fetchJson(`/api/place/nearbysearch/json?location=${lat},${lng}&radius=10000&type=${t}&key=${API_KEY}`).then(d => d?.results || [])
     ));
-    const unique = new Map<string, any>();
-    all.flat().forEach((p: any) => p.place_id && unique.set(p.place_id, p));
+    const unique = new Map();
+    all.flat().forEach(p => p.place_id && unique.set(p.place_id, p));
     return { places: [...unique.values()].slice(0, limit).map(mapGoogleToPlace), isLocationSearch: false };
   } catch (err) {
     console.error('Search failed:', err);
@@ -97,7 +92,7 @@ export async function searchPlaces(query = '', ll = '28.6139,77.2090', limit = 1
   }
 }
 
-export async function getPlaceDetails(id: string) {
+export async function getPlaceDetails(id) {
   if (!API_KEY) return null;
   try {
     const data = await fetchJson(`/api/place/details/json?place_id=${id}&key=${API_KEY}`);
@@ -105,28 +100,26 @@ export async function getPlaceDetails(id: string) {
   } catch { return null; }
 }
 
-export async function getMultiplePlaces(ids: string[]) {
+export async function getMultiplePlaces(ids) {
   if (!ids?.length) return [];
   const results = await Promise.all(ids.map(getPlaceDetails));
-  return results.filter(Boolean) as Place[];
+  return results.filter(Boolean);
 }
 
-export async function getCityName(ll: string) {
+export async function getCityName(ll) {
   if (!API_KEY) return 'Your Location';
   const [lat, lng] = ll.split(',');
 
   try {
-    // Try Places API first
     const p = await fetchJson(`/api/place/nearbysearch/json?location=${lat},${lng}&radius=10000&type=locality&key=${API_KEY}`);
     if (p?.results?.[0]?.name) return p.results[0].name;
 
-    // Fallback to Geocoding
     const g = await fetchJson(`/api/geocode/json?latlng=${lat},${lng}&key=${API_KEY}`);
     if (g?.results?.[0]) {
       const parts = g.results[0].address_components;
-      const loc = parts.find((c: any) => c.types.includes('locality'));
+      const loc = parts.find(c => c.types.includes('locality'));
       if (loc) return loc.long_name;
-      const sub = parts.find((c: any) => c.types.includes('sublocality'));
+      const sub = parts.find(c => c.types.includes('sublocality'));
       if (sub) return sub.long_name;
     }
 

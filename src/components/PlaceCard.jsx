@@ -2,27 +2,7 @@ import { motion } from "framer-motion";
 import { Star, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export interface Place {
-  id: string;
-  name: string;
-  category: string;
-  image?: string;
-  rating: number;
-  distance: number;
-  description: string;
-  tags: { mood: string[]; time: string[] };
-  coordinates: { lat: number; lng: number };
-  isHiddenGem: boolean;
-  website?: string;
-  phone?: string;
-  address?: string;
-  openingHours?: string[];
-  priceLevel?: number;
-  openNow?: boolean;
-  mapUrl?: string;
-}
-
-export default function PlaceCard({ place, hideDistance }: { place: Place; hideDistance?: boolean }) {
+export default function PlaceCard({ place, hideDistance }) {
   return (
     <motion.div
       whileHover={{ y: -5 }}
@@ -32,11 +12,7 @@ export default function PlaceCard({ place, hideDistance }: { place: Place; hideD
       <Link to={`/place/${place.id}${hideDistance ? '?hideDistance=true' : ''}`} className="block h-full">
         <div className="relative h-48 w-full overflow-hidden bg-muted flex items-center justify-center">
           {place.image ? (
-            <img
-              src={place.image}
-              alt={place.name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
+            <img src={place.image} alt={place.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
           ) : (
             <MapPin className="w-12 h-12 text-muted-foreground/50" />
           )}
@@ -55,11 +31,7 @@ export default function PlaceCard({ place, hideDistance }: { place: Place; hideD
           <div className="mb-3">
             <h3 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors">{place.name}</h3>
           </div>
-
-          <p className="text-sm text-muted-foreground line-clamp-2 mb-4 leading-relaxed">
-            {place.description}
-          </p>
-
+          <p className="text-sm text-muted-foreground line-clamp-2 mb-4 leading-relaxed">{place.description}</p>
           {!hideDistance && (
             <div className="flex items-center text-xs text-muted-foreground font-medium">
               <MapPin className="w-3.5 h-3.5 mr-1" />
