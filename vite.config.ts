@@ -9,15 +9,15 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      '/gapi/place': {
+      '/api/place': {
         target: 'https://maps.googleapis.com/maps/api',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/gapi\/place/, '/place'),
+        rewrite: (path) => path.replace(/^\/api\/place/, '/place'),
       },
-      '/gapi/geocode': {
+      '/api/geocode': {
         target: 'https://maps.googleapis.com/maps/api',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/gapi\/geocode/, '/geocode'),
+        rewrite: (path) => path.replace(/^\/api\/geocode/, '/geocode'),
       },
     },
   },

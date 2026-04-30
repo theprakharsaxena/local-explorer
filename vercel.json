@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/api/place/(.*)", "destination": "/api/place/$1" },
+    { "source": "/api/geocode/(.*)", "destination": "/api/geocode/$1" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ]
+}

@@ -4,8 +4,8 @@ const API_KEY = import.meta.env.VITE_GOOGLE_PLACES_API_KEY;
 
 // Photo URLs go directly to Google (browser loads them as <img src>, no CORS issue).
 // API JSON endpoints go through Vite's proxy (/gapi/*) to avoid CORS.
-const PLACE_API = '/gapi/place';
-const GEOCODE_API = '/gapi/geocode';
+const PLACE_API = '/api/place';
+const GEOCODE_API = '/api/geocode';
 
 function formatCategory(cat: string): string {
   return cat
